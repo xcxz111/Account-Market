@@ -7,12 +7,13 @@ from loguru import logger
 from telegram.ext.filters import REPLY
 
 from config import TOKEN
-from const_strings import HOME, CABINET, BILLING, ADMIN, TELEGRAM, BUY_TELEGRAM_ACCOUNT, \
-    BACK_HOME, BACK_TELEGRAM, TG_FORMAT, PARTNERSHIP, SHOPPING_CART, TELEGRAM_TDATA, TELEGRAM_SESSION, \
-    TELEGRAM_TDATA_USA, TELEGRAM_SESSION_RU, TELEGRAM_TDATA_GHANA, BACK_CABINET
+from const_strings import HOME, CABINET, BILLING, ADMIN, TELEGRAM, \
+    BACK_HOME, BACK_TELEGRAM, PARTNERSHIP, SHOPPING_CART, TELEGRAM_TDATA, TELEGRAM_SESSION, \
+    TELEGRAM_TDATA_USA, TELEGRAM_SESSION_RU, TELEGRAM_TDATA_GHANA, BACK_CABINET, ADD_PRODUCT, COMPLETE_ORDER
 from reply import home_reply, cabinet_reply, billing_reply, admin_reply, telegram_reply, back_home_reply, \
     partnership_replay, shopping_cart_reply, telegram_tdata_reply, telegram_session_reply, telegram_tdata_usa_reply, \
-    telegram_tdata_ghana_reply, telegram_session_ru_reply, back_cabinet_reply, back_telegram_reply
+    telegram_tdata_ghana_reply, telegram_session_ru_reply, back_cabinet_reply, back_telegram_reply, add_product_reply, \
+    complete_order_reply
 from users.common import is_admin
 
 logger.add(Path(__file__).name + ".log", retention="10 days")
@@ -44,6 +45,8 @@ REPLY = {
     TELEGRAM_TDATA_USA: telegram_tdata_usa_reply,
     TELEGRAM_TDATA_GHANA: telegram_tdata_ghana_reply,
     TELEGRAM_SESSION_RU: telegram_session_ru_reply,
+    ADD_PRODUCT: add_product_reply,
+    COMPLETE_ORDER: complete_order_reply,
 
 }
 

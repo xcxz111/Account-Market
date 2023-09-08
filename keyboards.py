@@ -3,7 +3,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from const_strings import CABINET, BILLING, MY_PURCHASES, HOME, BILLING_USDT, STATISTIC, EDIT_BILLING, BACK_HOME, \
     PARTNERSHIP, SHOPPING_CART, COMPLETE_ORDER, ADD_PRODUCT, CLEAR_CART, TELEGRAM_TDATA_USA, \
     TELEGRAM_TDATA_GHANA, TELEGRAM_SESSION_RU, TELEGRAM_TDATA, TELEGRAM_SESSION, BACK_CABINET, TELEGRAM, \
-    BACK_TELEGRAM, SETTINGS
+    BACK_TELEGRAM, SETTINGS, COMPLETE_USDT, COMPLETE_BLIK
 
 HOME_KBD = [
     [InlineKeyboardButton("👤 Личный кабинет ", callback_data=CABINET)],
@@ -95,5 +95,19 @@ PARTNERSHIP_KBD = [
 ]
 
 
+COMPLETE_ORDER_KBD = [
+    [InlineKeyboardButton("оплатить USDT", callback_data=COMPLETE_USDT)],
+    [InlineKeyboardButton("оплатить Blik", callback_data=COMPLETE_BLIK)],
+
+    [
+        InlineKeyboardButton("🔸 Назад", callback_data=BACK_CABINET),
+        InlineKeyboardButton("🔹 Главная", callback_data=HOME)]
+
+]
 
 
+TELEGRAM_QUANTITY_KBD = [
+    [
+        InlineKeyboardButton("🔸 Назад", callback_data=BACK_TELEGRAM),
+        InlineKeyboardButton("🔹 Главная", callback_data=HOME)]
+]

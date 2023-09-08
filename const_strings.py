@@ -32,6 +32,8 @@ STATISTIC = "statistic"
 EDIT_BILLING = "edit_billing"
 
 COMPLETE_ORDER = "complete_order"
+COMPLETE_USDT = "complete_usdt"
+COMPLETE_BLIK = "complete_blik"
 ADD_PRODUCT = "add_product"
 CLEAR_CART = "clear_cart"
 

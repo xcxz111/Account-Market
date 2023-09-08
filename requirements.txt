@@ -1,2 +1,4 @@
 python-telegram-bot==20.4
 loguru==0.7.0
+peewee==3.16.3
+

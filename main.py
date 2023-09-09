@@ -86,6 +86,7 @@ def main():
 
     application.add_handler(CallbackQueryHandler(button))
 
+
     logger.info("Bot started")
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)

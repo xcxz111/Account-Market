@@ -1,6 +1,9 @@
+import asyncio
 from pathlib import Path
+from models import User, init_db
 
-from telegram import Update, ForceReply
+
+from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 
 from loguru import logger
@@ -9,11 +12,15 @@ from telegram.ext.filters import REPLY
 from config import TOKEN
 from const_strings import HOME, CABINET, BILLING, ADMIN, TELEGRAM, \
     BACK_HOME, BACK_TELEGRAM, PARTNERSHIP, SHOPPING_CART, TELEGRAM_TDATA, TELEGRAM_SESSION, \
-    TELEGRAM_TDATA_USA, TELEGRAM_SESSION_RU, TELEGRAM_TDATA_GHANA, BACK_CABINET, ADD_PRODUCT, COMPLETE_ORDER
-from reply import home_reply, cabinet_reply, billing_reply, admin_reply, telegram_reply, back_home_reply, \
-    partnership_replay, shopping_cart_reply, telegram_tdata_reply, telegram_session_reply, telegram_tdata_usa_reply, \
-    telegram_tdata_ghana_reply, telegram_session_ru_reply, back_cabinet_reply, back_telegram_reply, add_product_reply, \
-    complete_order_reply
+    TELEGRAM_TDATA_USA, TELEGRAM_SESSION_RU, TELEGRAM_TDATA_GHANA, BACK_CABINET, ADD_PRODUCT, COMPLETE_ORDER, \
+    ADD_ACCOUNT, ADD_ACCOUNT_TDATA, ADD_ACCOUNT_SESSION, ADD_ACCOUNT_TDATA_USA
+from reply.reply import home_reply, cabinet_reply, back_cabinet_reply, billing_reply, back_telegram_reply, \
+    back_home_reply, partnership_replay
+
+from reply.reply_admin import admin_reply, add_account_reply, add_account_tdata_reply, add_account_tdata_usa_reply
+from reply.reply_orders import shopping_cart_reply, add_product_reply, complete_order_reply
+from reply.reply_telegram import telegram_tdata_reply, telegram_session_reply, telegram_tdata_usa_reply, \
+    telegram_tdata_ghana_reply, telegram_reply, telegram_session_ru_reply
 from users.common import is_admin
 
 logger.add(Path(__file__).name + ".log", retention="10 days")
@@ -25,6 +32,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     admin = is_admin(user)
 
     logger.debug(f'start for user: {user.username} [{"ADMIN" if admin else "NOT ADMIN"}]')
+
+    new_user, created = await User.get_or_create(
+        UserID=user.id,
+        UserName=user.username,
+        defaults={'Balance': 0.0}
+    )
 
     await home_reply(update, context)
 
@@ -47,6 +60,10 @@ REPLY = {
     TELEGRAM_SESSION_RU: telegram_session_ru_reply,
     ADD_PRODUCT: add_product_reply,
     COMPLETE_ORDER: complete_order_reply,
+    ADD_ACCOUNT: add_account_reply,
+    ADD_ACCOUNT_TDATA: add_account_tdata_reply,
+    ADD_ACCOUNT_TDATA_USA: add_account_tdata_usa_reply
+
 
 }
 
@@ -66,6 +83,19 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text("Help!")
 
 
+async def handle_document(update, context):
+    user_data = context.user_data
+    user_id = update.effective_user.id
+
+    if user_data.get('state') == 'add_account_tdata_usa':
+        document = update.message.document
+
+        user_data['state'] = None
+
+        # Теперь вы можете выполнить другие действия после получения файла
+        await update.message.reply_text("Файл успешно обработан.")
+
+
 async def photo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     photo = update.message.photo[-1]
     photo_file = await photo.get_file()
@@ -76,6 +106,9 @@ async def photo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 def main():
     """Start the bot."""
     # Create the Application and pass it your bot's token.
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(init_db())
+
     application = Application.builder().token(TOKEN).build()
 
     # on different commands - answer in Telegram
@@ -86,12 +119,12 @@ def main():
 
     application.add_handler(CallbackQueryHandler(button))
 
+    application.add_handler(MessageHandler(filters.Document, handle_document))
 
     logger.info("Bot started")
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
-    
+
 
 if __name__ == '__main__':
     main()
-

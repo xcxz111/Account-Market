@@ -1,3 +1,4 @@
 python-telegram-bot==20.4
 loguru==0.7.0
 tortoise-orm==0.20.0
+aerich==0.7.2
